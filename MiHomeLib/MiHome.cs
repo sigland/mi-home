@@ -27,6 +27,7 @@ namespace MiHomeLib
             {"sensor_ht", sid => new ThSensor(sid)},
             {"weather.v1", sid => new WeatherSensor(sid)},
             {"motion", sid => new MotionSensor(sid)},
+            {"sensor_motion.aq2", sid => new AqaraMotionSensor(sid)},
             {"plug", sid => new SocketPlug(sid, _transport)},
             {"magnet", sid => new DoorWindowSensor(sid)},
             {"sensor_wleak.aq1", sid => new WaterLeakSensor(sid)},
@@ -126,7 +127,7 @@ namespace MiHomeLib
                 {
                     var str = await _transport.ReceiveAsync().ConfigureAwait(false);
 
-                    //Console.WriteLine(str);
+                    Console.WriteLine(str);
 
                     var respCmd = JsonConvert.DeserializeObject<ResponseCommand>(str);
 
