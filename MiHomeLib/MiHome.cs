@@ -167,7 +167,12 @@ namespace MiHomeLib
             
             var device = _devicesList.FirstOrDefault(x => x.Sid == cmd.Sid);
 
-            if (device != null) return;
+            if (device != null)
+            {
+                if (!string.IsNullOrEmpty(cmd.Data))
+                    device.ParseData(cmd.Data);
+                return;
+            }
 
             device = _devicesMap[cmd.Model](cmd.Sid);
 
@@ -206,6 +211,11 @@ namespace MiHomeLib
             }
 
             //TODO: if device was removed we need to know it somehow
+        }
+
+        public static UdpTransport GetTransport()
+        {
+            return _transport;
         }
     }
 }

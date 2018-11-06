@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using MiHomeLib.Commands;
 using MiHomeLib.Events;
 using Newtonsoft.Json.Linq;
 
@@ -6,6 +9,10 @@ namespace MiHomeLib.Devices
 {
     public class AqaraMotionSensor : MiHomeDevice
     {
+        private const int Timeout = 5000; // ms
+        private bool LuminosityRecieved;
+        private AutoResetEvent LuxEvent = new AutoResetEvent(false);
+
         public event EventHandler<MotionEventArgs> OnMotion;
         public event EventHandler<NoMotionEventArgs> OnNoMotion;
 
@@ -49,16 +56,26 @@ namespace MiHomeLib.Devices
             if (jObject["lux"] != null && uint.TryParse(jObject["lux"].ToString(), out uint lux))
             {
                 Lux = lux;
+                LuminosityRecieved = true;
+                LuxEvent.Set();
             }
         }
 
         public DateTime? MotionDate { get; private set; }
 
-        public override string ToString()
+        public bool ReadLuminosity(out uint lux)
         {
-            return $"Status: {Status}, Voltage: {Voltage}V, NoMotion: {NoMotion}s";
+            LuminosityRecieved = false;
+            var transport = MiHome.GetTransport();
+            transport.SendCommand(new ReadDeviceCommand(Sid));
+            LuxEvent.WaitOne(Timeout);
+            lux = Lux;
+            return LuminosityRecieved;
         }
 
-        
+        public override string ToString()
+        {
+            return $"Status: {Status}, Voltage: {Voltage}V, NoMotion: {NoMotion}s, Luminosity: {Lux}lux";
+        }
     }
 }
