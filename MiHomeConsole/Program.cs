@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MiHomeLib;
 using MiHomeLib.Devices;
@@ -15,16 +14,10 @@ namespace MiHomeConsole
             using (var miHome = new MiHome())
             {
                 Task.Delay(5000).Wait();
-                miHome.GetDevicesByType<AqaraMotionSensor>().FirstOrDefault().ReadLuminosity(out uint lux);
-                miHome.GetDevicesByType<AqaraMotionSensor>().FirstOrDefault().ReadLuminosity(out lux);
-                miHome.GetDevicesByType<AqaraMotionSensor>().FirstOrDefault().ReadLuminosity(out lux);
-                miHome.GetDevicesByType<AqaraMotionSensor>().FirstOrDefault().ReadLuminosity(out lux);
-                miHome.GetDevicesByType<AqaraMotionSensor>().FirstOrDefault().ReadLuminosity(out lux);
-                miHome.GetDevicesByType<AqaraMotionSensor>().FirstOrDefault().ReadLuminosity(out lux);
-                miHome.GetDevicesByType<AqaraMotionSensor>().FirstOrDefault().ReadLuminosity(out lux);
-                miHome.GetDevicesByType<AqaraMotionSensor>().FirstOrDefault().ReadLuminosity(out lux);
-                miHome.GetDevicesByType<AqaraMotionSensor>().FirstOrDefault().ReadLuminosity(out lux);
-
+                foreach (var miHomeDevice in miHome.GetDevices())
+                {
+                    Console.WriteLine($"{miHomeDevice.Sid}, {miHomeDevice.GetType()}, {miHomeDevice}" ); // all discovered devices
+                }
 
                 Console.ReadLine();
             }
